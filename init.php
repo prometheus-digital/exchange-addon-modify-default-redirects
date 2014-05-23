@@ -74,7 +74,7 @@ function it_exchange_modify_default_redirects_settings_callback() {
 							<span><?php echo it_exchange_modify_default_redirects_get_settings_dropdown( 'wp-post', $slug, $selected ); ?></span>
 						</div>
 						<div class="landing-page external-url <?php echo ( 'external-url' == $selected_type ) ? '' : 'hide-if-js'; ?>">
-							<span><input type="text" name="it-exchange-modify-default-redirects[<?php echo $slug; ?>][external-url]" value="<?php esc_attr_e( $selected ); ?>" placeholder="<?php esc_attr_e( 'http://' ); ?>" /></span>
+							<span><input type="text" name="it-exchange-modify-default-redirects[<?php echo $slug; ?>][external-url]" value="<?php if ( 'external-url' == $selected_type ) { esc_attr_e( $selected ); } ?>" placeholder="<?php esc_attr_e( 'http://' ); ?>" /></span>
 						</div>
 					</div>
 				</div>
