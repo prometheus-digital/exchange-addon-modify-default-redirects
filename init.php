@@ -37,6 +37,7 @@ function it_exchange_modify_default_redirects_settings_callback() {
 			ITUtility::show_status_message( __( 'Options Saved', 'LION' ) );
 
 		?>
+		<p><?php printf( __( 'These settings allow you to modify the page that a customer is redirected to after completing a specific action. Need more options? %sLet us know%s', 'LION' ), '<a href="http://ithemes.com/exchange/feature-request/" target="_blank">', '</a>' ); ?></p>
 		<div class="it-exchange-addon-modify-default-redirects-table">
 			<div class="it-row ps-header">
 				<div class="it-column column-1">
@@ -58,7 +59,7 @@ function it_exchange_modify_default_redirects_settings_callback() {
 						<span><?php echo $redirect['setting_title']; ?></span><?php if ( ! empty( $redirect['tooltip'] ) ) { it_exchange_admin_tooltip( $redirect['tooltip'] ); } ?>
 					</div>
 					<div class="it-column column-2">
-						<span><?php echo it_exchange_modify_default_redirects_get_settings_dropdown( 'type-selector', $slug, $selected_type ); ?></span>
+						<span><?php echo it_exchange_modify_default_redirects_get_settings_dropdown( 'type-selector', $slug, $selected_type, $redirect['excluded'] ); ?></span>
 					</div>
 					<div class="it-column column-3">
 						<div class="landing-page default <?php echo ( 'default' == $selected_type ) ? '' : 'hide-if-js'; ?>">
@@ -73,9 +74,11 @@ function it_exchange_modify_default_redirects_settings_callback() {
 						<div class="landing-page wp-post <?php echo ( 'wp-post' == $selected_type ) ? '' : 'hide-if-js'; ?>">
 							<span><?php echo it_exchange_modify_default_redirects_get_settings_dropdown( 'wp-post', $slug, $selected ); ?></span>
 						</div>
+						<?php if ( ! in_array( 'external-url', $redirect['excluded'] ) ) : ?>
 						<div class="landing-page external-url <?php echo ( 'external-url' == $selected_type ) ? '' : 'hide-if-js'; ?>">
 							<span><input type="text" name="it-exchange-modify-default-redirects[<?php echo $slug; ?>][external-url]" value="<?php if ( 'external-url' == $selected_type ) { esc_attr_e( $selected ); } ?>" placeholder="<?php esc_attr_e( 'http://' ); ?>" /></span>
 						</div>
+						<?php endif; ?>
 					</div>
 				</div>
 				<?php
@@ -103,45 +106,29 @@ function it_exchange_modify_default_redirects_settings_callback() {
 */
 function it_exchange_addon_modify_default_redirects_get_registered_redirects() {
 	$redirects = array(
-		'login-to-profile' => array(
+		'login-success-from-login' => array(
 			'setting_title' => __( 'Successful log-in from the Log-in Page', 'LION' ),
-			'defaults_to'   => it_exchange_get_page_url( 'profile' ),
-			'tooltip'       => __( 'This is where a customer will be directed after a successful log-in attempt.', 'LION' ),
+			'defaults_to'   => it_exchange_get_page_url( 'account' ),
+			'tooltip'       => __( 'This is where a customer will be directed after a successful log-in attempt from the log-in page.', 'LION' ),
+			'excluded'      => array( 'external-url' ),
 		),
-		'login-failed-from-login' => array(
-			'setting_title' => __( 'Failed log-in from the Log-in Page', 'LION' ),
-			'defaults_to'   => it_exchange_get_page_url( 'login' ),
-			'tooltip'       => __( 'This is where a customer will be directed after a failed log-in attempt from the log-in page.', 'LION' ),
-		),
-		'login-failed-from-checkout' => array(
-			'setting_title' => __( 'Failed log-in from the Checkout Page', 'LION' ),
+		'login-success-from-checkout' => array(
+			'setting_title' => __( 'Successful log-in from the Checkout Page', 'LION' ),
 			'defaults_to'   => it_exchange_get_page_url( 'checkout' ),
-			'tooltip'       => __( 'This is where a customer will be directed after a failed log-in attempt from the checkout page.', 'LION' ),
+			'tooltip'       => __( 'This is where a customer will be directed after a successful log-in attempt from the Checkout.', 'LION' ),
+			'excluded'      => array( 'external-url' ),
 		),
-		'registration-to-profile' => array(
+		'registration-success-from-registration' => array(
 			'setting_title' => __( 'Successful registration from the Registration Page', 'LION' ),
 			'defaults_to'   => it_exchange_get_page_url( 'profile' ),
-			'tooltip'       => __( 'This is where a customer will be directed after a successful registration from the registration page.', 'LION' ),
+			'tooltip'       => __( 'This is where a customer will be directed after they successfully register from the registration page.', 'LION' ),
+			'excluded'      => array( 'external-url' ),
 		),
-		'registration-to-checkout' => array(
+		'registration-success-from-checkout' => array(
 			'setting_title' => __( 'Successful registration from the Checkout Page', 'LION' ),
 			'defaults_to'   => it_exchange_get_page_url( 'checkout' ),
-			'tooltip'       => __( 'This is where a customer will be directed after a successful registration from the checkout page.', 'LION' ),
-		),
-		'login-to-profile-when-user-logged-in' => array(
-			'setting_title' => __( 'When a Logged in User Navigates to the Log-in Page', 'LION' ),
-			'defaults_to'   => it_exchange_get_page_url( 'profile' ),
-			'tooltip'       => __( 'This is where a customer that is logged in will be directed if they attempt to manually navigate to the Log-in page.', 'LION' ),
-		),
-		'download-pickup-hash-not-found-to-store' => array(
-			'setting_title' => __( 'Digital Download: Not Found', 'LION' ),
-			'defaults_to'   => it_exchange_get_page_url( 'downloads' ),
-			'tooltip'       => __( 'This is where a customer is routed if they attempt to download a Digital Download Product\'s file that can\'t be found by Exchange.', 'LION' ),
-		),
-		'download-pickup-user-not-logged-in' => array(
-			'setting_title' => __( 'Digital Download: Customer not logged in', 'LION' ),
-			'defaults_to'   => it_exchange_get_page_url( 'login' ),
-			'tooltip'       => __( 'This is where a customer is routed if they attempt to download a Digital Download Product\'s but they aren\'t logged in.', 'LION' ),
+			'tooltip'       => __( 'This is where a customer will be directed after they successfully register from the Checkout page.', 'LION' ),
+			'excluded'      => array( 'external-url' ),
 		),
 	);
 	$redirects = apply_filters( 'it_exchange_addon_modify_default_redirects_get_registered_redirects', $redirects );
@@ -178,7 +165,7 @@ add_action( 'admin_enqueue_scripts', 'it_exchange_addon_modify_default_redirects
  * @param  mixed  $selected the selected value
  * @return string           the select field
 */
-function it_exchange_modify_default_redirects_get_settings_dropdown( $type, $slug, $selected ) {
+function it_exchange_modify_default_redirects_get_settings_dropdown( $type, $slug, $selected, $excluded=array() ) {
 	switch( $type ) {
 		case 'exchange' :
 			$pages   = it_exchange_get_pages();
@@ -218,7 +205,8 @@ function it_exchange_modify_default_redirects_get_settings_dropdown( $type, $slu
 			$select .= '<option value="exchange" ' . selected( 'exchange', $selected, false ) . '>' . __( 'Exchange Page', 'LION' ) . '</option>';
 			$select .= '<option value="wp-page" ' . selected( 'wp-page', $selected, false ) . '>' . __( 'WordPress Page', 'LION' ) . '</option>';
 			$select .= '<option value="wp-post" ' . selected( 'wp-post', $selected, false ) . '>' . __( 'WordPress Post', 'LION' ) . '</option>';
-			$select .= '<option value="external-url" ' . selected( 'external-url', $selected, false ) . '>' . __( 'External URL', 'LION' ) . '</option>';
+			if ( ! in_array( 'external-url', $excluded ) )
+				$select .= '<option value="external-url" ' . selected( 'external-url', $selected, false ) . '>' . __( 'External URL', 'LION' ) . '</option>';
 			$select .= '</select>';
 			return $select;
 			break;
@@ -250,3 +238,56 @@ function it_exchange_modify_default_redirects_save_settings() {
     it_exchange_save_option( 'addon_modify_default_redirects', $redirects );
 }
 add_action( 'admin_init', 'it_exchange_modify_default_redirects_save_settings' );
+
+/**
+ * Setups up our filters
+ *
+ * @since 1.0.0
+ *
+ * @return void
+*/
+function it_exchange_modify_default_redirects_maybe_add_filters() {
+	$settings = it_exchange_get_option( 'addon_modify_default_redirects' );
+	foreach( (array) $settings as $hook => $args ) {
+		add_filter( 'it_exchange_redirect_for-' . $hook, 'it_exchange_modify_default_redirects_apply_filter', 10, 3 ); 
+	}
+}
+add_action( 'init', 'it_exchange_modify_default_redirects_maybe_add_filters' );
+
+/**
+ * Applies the filter to modify the redirct location
+ *
+ * @since 1.0.0
+*/
+function it_exchange_modify_default_redirects_apply_filter( $url, $opitons, $status ) {
+	$current_filter = current_filter();
+	$current_filter = explode( 'it_exchange_redirect_for-', $current_filter );
+	$hook = empty( $current_filter[1] ) ? false : $current_filter[1];
+	if ( empty( $hook ) )
+		return $url;
+
+	$settings = it_exchange_get_option( 'addon_modify_default_redirects' );
+
+	if ( empty( $settings[$hook] ) )
+		return $url;
+
+	switch( $settings[$hook]['type'] ) {
+		case 'wp-page' :
+		case 'wp-post' :
+			$modified_url = get_the_permalink( $settings[$hook]['target'] );
+			break;
+		case 'exchange' :
+			$modified_url = it_exchange_get_page_url( $settings[$hook]['target'] );
+			break;
+		case 'external-url' :
+			$modified_url = empty( $settings[$hook]['target'] ) ? false: $settings[$hook]['target'];
+			break;
+	}
+
+	$url = empty( $modified_url ) ? $url : $modified_url;
+
+	if ( 'login-success-from-checkout' == $hook )
+		it_exchange_update_session_data( 'login_redirect', $url );
+
+	return $url;
+}
