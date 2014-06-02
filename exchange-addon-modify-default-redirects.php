@@ -3,7 +3,7 @@
  * Plugin Name: iThemes Exchange - Modify Default Redirects
  * Version: 1.0.0
  * Description: Allows the store owner to change the default locations Exchange redirects customers to after actions like a successful login.
- * Plugin URI: http://ithemes.com/purchase/modify-default-redirects-addon
+ * Plugin URI: http://ithemes.com/purchase/modify-default-redirects-ithemes-exchange-add-on/
  * Author: iThemes
  * Author URI: http://ithemes.com
  * iThemes Package: exchange-addon-modify-default-redirects
@@ -28,8 +28,8 @@ function it_exchange_register_modify_default_redirects_addon() {
 		'name'              => __( 'Modify Default Redirects', 'LION' ),
 		'description'       => __( 'Allows the store owner to change the default locations Exchange redirects customers to after actions like a successful login.', 'LION' ),
 		'author'            => 'iThemes',
-		'author_url'        => 'http://ithemes.com/purchase/modify-default-redirects-addon/',
-		//'icon'              => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/lib/images/modify-default-redirects-50px.png' ),
+		'author_url'        => 'http://ithemes.com/purchase/modify-default-redirects-ithemes-exchange-add-on/',
+		'icon'              => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/lib/assets/modify-default-redirects50px.png' ),
 		'file'              => dirname( __FILE__ ) . '/init.php',
 		'category'          => 'product-feature',
 		'basename'          => plugin_basename( __FILE__ ),
