@@ -131,6 +131,11 @@ function it_exchange_addon_modify_default_redirects_get_registered_redirects() {
 			'excluded'      => array( 'external-url' ),
 		),
 	);
+	if ( ! it_exchange_is_multi_item_cart_allowed() ) {
+		unset( $redirects['registration-success-from-checkout'] );
+		unset( $redirects['login-success-from-checkout'] );
+	}
+
 	$redirects = apply_filters( 'it_exchange_addon_modify_default_redirects_get_registered_redirects', $redirects );
 	return (array) $redirects;
 }
@@ -259,7 +264,7 @@ add_action( 'init', 'it_exchange_modify_default_redirects_maybe_add_filters' );
  *
  * @since 1.0.0
 */
-function it_exchange_modify_default_redirects_apply_filter( $url, $opitons, $status ) {
+function it_exchange_modify_default_redirects_apply_filter( $url, $options, $status ) {
 	$current_filter = current_filter();
 	$current_filter = explode( 'it_exchange_redirect_for-', $current_filter );
 	$hook = empty( $current_filter[1] ) ? false : $current_filter[1];
@@ -289,5 +294,6 @@ function it_exchange_modify_default_redirects_apply_filter( $url, $opitons, $sta
 	if ( 'login-success-from-checkout' == $hook )
 		it_exchange_update_session_data( 'login_redirect', $url );
 
+	$url = apply_filters( 'it_exchange_modify_default_redirects_apply_filter', $url, $options, $status );
 	return $url;
 }
