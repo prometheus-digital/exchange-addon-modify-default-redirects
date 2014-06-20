@@ -32,7 +32,7 @@ function it_exchange_modify_default_redirects_settings_callback() {
 		<?php $form->start_form( $form_options, 'it-exchange-modify-default-redirects-settings' ); ?>
 
 		<?php
-		do_action( 'it_exchange_digital_downloads_settings_form_top' );
+		do_action( 'it_exchange_modify_default_redirects_settings_form_top' );
 		if ( ! empty( $_POST['__it-form-prefix'] ) && 'it-exchange-add-on-modify-default-redirects' == $_POST['__it-form-prefix'] )
 			ITUtility::show_status_message( __( 'Options Saved', 'LION' ) );
 
