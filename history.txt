@@ -1,2 +1,7 @@
+1.0.1 - 2014-06-20 - Glenn Ansley, Ronald van Weerd
+	Fixed incorrect hook name. props @Ronald
+	Fixed typo in param name.
+	Added filter to it_exchange_modify_default_redirects_apply_filter()
+	Don't give options for checkout page if multi-item cart isn't active
 1.0.0 - 2014-06-02 - Glenn Ansley, Elise Alley, Cody Smith
 	Initial Release
