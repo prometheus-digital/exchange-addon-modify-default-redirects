@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: iThemes Exchange - Modify Default Redirects
- * Version: 1.0.2
+ * Version: 1.0.3
  * Description: Allows the store owner to change the default locations Exchange redirects customers to after actions like a successful login.
  * Plugin URI: http://ithemes.com/purchase/modify-default-redirects-ithemes-exchange-add-on/
  * Author: iThemes
