@@ -37,30 +37,7 @@ function it_exchange_modify_default_redirects_settings_callback() {
 			ITUtility::show_status_message( __( 'Options Saved', 'LION' ) );
 
 		?>
-		<p><?php printf( __( 'These settings allow you to modify the page that a customer is redirected to after completing a specific action. Need more options? %sLet us know%s', 'LION' ), '<a href="http://ithemes.com/exchange/feature-request/" target="_blank">', '</a>' ); ?></p>
-		<h4>License Key</h4>
-			<?php
-			   $exchangewp_modify_default_redirects_options = get_option( 'it-storage-exchange_addon_modify_default_redirects' );
-			   $license = $exchangewp_modify_default_redirects_options['modify_default_redirects_license'];
-			   // var_dump($license);
-			   $exstatus = trim( get_option( 'exchange_modify_default_redirects_license_status' ) );
-			   // var_dump($exstatus);
-			?>
-			<p>
-			 <label class="description" for="exchange_modify_default_redirects_license_key"><?php _e('Enter your license key'); ?></label>
-			 <input id="modify_default_redirects_license" name="it-exchange-add-on-modify_default_redirects-modify_default_redirects_license" type="text" value="<?php #esc_attr_e( $license ); ?>" />
-			 
-			 <span>
-			   <?php if( $exstatus !== false && $exstatus == 'valid' ) { ?>
-						<span style="color:green;"><?php _e('active'); ?></span>
-						<?php wp_nonce_field( 'exchange_modify_default_redirects_nonce', 'exchange_modify_default_redirects_nonce' ); ?>
-						<input type="submit" class="button-secondary" name="exchange_modify_default_redirects_license_deactivate" value="<?php _e('Deactivate License'); ?>"/>
-					<?php } else {
-						wp_nonce_field( 'exchange_modify_default_redirects_nonce', 'exchange_modify_default_redirects_nonce' ); ?>
-						<input type="submit" class="button-secondary" name="exchange_modify_default_redirects_license_activate" value="<?php _e('Activate License'); ?>"/>
-					<?php } ?>
-			 </span>
-			</p>
+		<p><?php printf( __( 'These settings allow you to modify the page that a customer is redirected to after completing a specific action.' ) ); ?></p>
 		<div class="it-exchange-addon-modify-default-redirects-table">
 			<div class="it-row ps-header">
 				<div class="it-column column-1">

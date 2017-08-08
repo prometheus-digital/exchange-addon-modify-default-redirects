@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: ExchangeWP - Modify Default Redirects
- * Version: 1.0.4
+ * Version: 1.0.2
  * Description: Allows the store owner to change the default locations Exchange redirects customers to after actions like a successful login.
  * Plugin URI: https://exchangewp.com/downloads/modify-default-redirects/
  * Author: ExchangeWP
@@ -64,3 +64,33 @@ function ithemes_exchange_addon_modify_default_redirects_updater_register( $upda
 }
 //add_action( 'ithemes_updater_register', 'ithemes_exchange_addon_modify_default_redirects_updater_register' );
 //require( dirname( __FILE__ ) . '/lib/updater/load.php' );
+
+if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) )  {
+	require_once 'EDD_SL_Plugin_Updater.php';
+}
+
+function exchange_custom_url_tracking_plugin_updater() {
+
+	// retrieve our license key from the DB
+	// this is going to have to be pulled from a seralized array to get the actual key.
+	// $license_key = trim( get_option( 'exchange_custom_url_tracking_license_key' ) );
+	$exchangewp_custom_url_tracking_options = get_option( 'it-storage-exchange_custom_url_tracking-addon' );
+	// $license_key = $exchangewp_custom_url_tracking_options['custom_url_tracking-license-key'];
+	$license_key = "";
+	// setup the updater
+	$edd_updater = new EDD_SL_Plugin_Updater( 'https://exchangewp.com', __FILE__, array(
+			'version' 		=> '0.2.0', 				// current version number
+			'license' 		=> $license_key, 		// license key (used get_option above to retrieve from DB)
+			'item_name' 	=> urlencode( 'Modify Default Redirects' ), 	  // name of this plugin
+			'author' 	  	=> 'ExchangeWP',    // author of this plugin
+			'url'       	=> home_url(),
+			'wp_override' => true,
+			'beta'		  	=> false
+		)
+	);
+	// var_dump($edd_updater);
+	// die();
+
+}
+
+add_action( 'admin_init', 'exchange_custom_url_tracking_plugin_updater', 0 );
