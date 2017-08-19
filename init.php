@@ -37,7 +37,45 @@ function it_exchange_modify_default_redirects_settings_callback() {
 			ITUtility::show_status_message( __( 'Options Saved', 'LION' ) );
 
 		?>
-		<p><?php printf( __( 'These settings allow you to modify the page that a customer is redirected to after completing a specific action. Need more options? %sLet us know%s', 'LION' ), '<a href="http://ithemes.com/exchange/feature-request/" target="_blank">', '</a>' ); ?></p>
+		<p><?php printf( __( 'These settings allow you to modify the page that a customer is redirected to after completing a specific action.' ) ); ?></p>
+		<?php
+		$exchangewp_modify_redirects_options = get_option( 'it-storage-exchange_modify_redirects-addon' );
+		$license = trim( $exchangewp_modify_redirects_options['modify_redirects-license-key'] );
+		// var_dump($license);
+		$exstatus = trim( get_option( 'exchange_modify_redirects_license_status' ) );
+		//  var_dump($exstatus);
+
+		$after_license = wp_nonce_field( 'exchange_modify_redirects_nonce', 'exchange_modify_redirects_nonce' );
+
+		if( $exstatus !== false && $exstatus == 'valid' ) {
+
+			$after_license .= '<span style="color:green;">active</span>';
+			$after_license .= '<input type="submit" class="button-secondary" name="exchange_modify_redirects_license_deactivate" value="Deactivate License"/>';
+		} else {
+			$after_license .= '<input type="submit" class="button-secondary" name="exchange_modify_redirects_license_activate" value="Activate License"/>';
+		}
+
+		$options = array(
+			'prefix'      => 'modify_redirects-addon',
+			'form-fields' => array(
+				array(
+					'type'	=> 'heading',
+					'label' => __('License Key', 'LION' ),
+					'slug' => 'modify_redirects-license-key-heading',
+				),
+				array(
+					'type' => 'text_box',
+					'label' => __('Enter License Key', 'LION'),
+					'slug' => 'modify_redirects-license-key',
+					'after' => $after_license,
+				),
+			),
+		);
+		it_exchange_print_admin_settings_form( $options );
+		?>
+	</div>
+
+
 		<div class="it-exchange-addon-modify-default-redirects-table">
 			<div class="it-row ps-header">
 				<div class="it-column column-1">
@@ -140,6 +178,169 @@ function it_exchange_addon_modify_default_redirects_get_registered_redirects() {
 	return (array) $redirects;
 }
 
+
+function exchange_modify_redirects_license_activate() {
+
+	if( isset( $_POST['exchange_modify_redirects_license_activate'] ) ) {
+
+			// run a quick security check
+		 	if( ! check_admin_referer( 'exchange_modify_redirects_nonce', 'exchange_modify_redirects_nonce' ) )
+				return; // get out if we didn't click the Activate button
+
+			// retrieve the license from the database
+			// $license = trim( get_option( 'exchange_modify_redirects_license_key' ) );
+	   $exchangewp_modify_redirects_options = get_option( 'it-storage-exchange_modify_redirects-addon' );
+	   $license = trim( $exchangewp_modify_redirects_options['modify_redirects-license-key'] );
+
+			// 	var_dump($license);
+			// data to send in our API request
+			$api_params = array(
+				'edd_action' => 'activate_license',
+				'license'    => $license,
+				'item_name'  => urlencode( 'modify-default-redirects' ), // the name of our product in EDD
+				'url'        => home_url()
+			);
+
+			// Call the custom API.
+			$response = wp_remote_post( 'https://exchangewp.com', array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
+
+			// make sure the response came back okay
+			if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+
+				if ( is_wp_error( $response ) ) {
+					$message = $response->get_error_message();
+				} else {
+					$message = __( 'An error occurred, please try again.' );
+				}
+
+			} else {
+
+				$license_data = json_decode( wp_remote_retrieve_body( $response ) );
+
+				if ( false === $license_data->success ) {
+
+					switch( $license_data->error ) {
+
+						case 'expired' :
+
+							$message = sprintf(
+								__( 'Your license key expired on %s.' ),
+								date_i18n( get_option( 'date_format' ), strtotime( $license_data->expires, current_time( 'timestamp' ) ) )
+							);
+							break;
+
+						case 'revoked' :
+
+							$message = __( 'Your license key has been disabled.' );
+							break;
+
+						case 'missing' :
+
+							$message = __( 'Invalid license.' );
+							break;
+
+						case 'invalid' :
+						case 'site_inactive' :
+
+							$message = __( 'Your license is not active for this URL.' );
+							break;
+
+						case 'item_name_mismatch' :
+
+							$message = sprintf( __( 'This appears to be an invalid license key for %s.' ), 'modify_redirects' );
+							break;
+
+						case 'no_activations_left':
+
+							$message = __( 'Your license key has reached its activation limit.' );
+							break;
+
+						default :
+
+							$message = __( 'An error occurred, please try again.' );
+							break;
+					}
+
+				}
+
+			}
+
+			// Check if anything passed on a message constituting a failure
+			if ( ! empty( $message ) ) {
+				$base_url = admin_url( 'admin.php?page=' . 'modify_redirects' );
+				$redirect = add_query_arg( array( 'sl_activation' => 'false', 'message' => urlencode( $message ) ), $base_url );
+
+				wp_redirect( $redirect );
+				exit();
+			}
+
+			//$license_data->license will be either "valid" or "invalid"
+			update_option( 'exchange_modify_redirects_license_status', $license_data->license );
+			wp_redirect( admin_url( 'admin.php?page=it-exchange-addons&add-on-settings=modify-default-redirects' ) );
+			exit();
+		}
+
+}
+add_action('admin_init', 'exchange_modify_redirects_license_deactivate');
+add_action('admin_init', 'exchange_modify_redirects_license_activate');
+
+function exchange_modify_redirects_license_deactivate() {
+
+	 // deactivate here
+	 // listen for our activate button to be clicked
+		if( isset( $_POST['exchange_modify_redirects_license_deactivate'] ) ) {
+
+			// run a quick security check
+		 	if( ! check_admin_referer( 'exchange_modify_redirects_nonce', 'exchange_modify_redirects_nonce' ) )
+				return; // get out if we didn't click the Activate button
+
+			// retrieve the license from the database
+			// $license = trim( get_option( 'exchange_modify_redirects_license_key' ) );
+
+			$exchangewp_modify_redirects_options = get_option( 'it-storage-exchange_modify_redirects-addon' );
+ 	    $license = trim( $exchangewp_modify_redirects_options['modify_redirects-license-key'] );
+
+
+
+			// data to send in our API request
+			$api_params = array(
+				'edd_action' => 'deactivate_license',
+				'license'    => $license,
+				'item_name'  => urlencode( 'modify-default-redirects' ), // the name of our product in EDD
+				'url'        => home_url()
+			);
+			// Call the custom API.
+			$response = wp_remote_post( 'https://exchangewp.com', array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
+
+			// make sure the response came back okay
+			if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+
+				if ( is_wp_error( $response ) ) {
+					$message = $response->get_error_message();
+				} else {
+					$message = __( 'An error occurred, please try again.' );
+				}
+
+				// $base_url = admin_url( 'admin.php?page=' . 'modify_redirects-license' );
+				// $redirect = add_query_arg( array( 'sl_activation' => 'false', 'message' => urlencode( $message ) ), $base_url );
+
+				wp_redirect( 'admin.php?page=it-exchange-addons&add-on-settings=modify-default-redirects' );
+				exit();
+			}
+
+			// decode the license data
+			$license_data = json_decode( wp_remote_retrieve_body( $response ) );
+			// $license_data->license will be either "deactivated" or "failed"
+			if( $license_data->license == 'deactivated' ) {
+				delete_option( 'exchange_modify_redirects_license_status' );
+			}
+
+			wp_redirect( admin_url( 'admin.php?page=it-exchange-addons&add-on-settings=modify-default-redirects' ) );
+			exit();
+
+		}
+}
+
 /**
  * Enqueues css and js for admin page
  *
@@ -240,7 +441,7 @@ function it_exchange_modify_default_redirects_save_settings() {
 	}
 
 	// Save data
-    it_exchange_save_option( 'addon_modify_default_redirects', $redirects );
+  it_exchange_save_option( 'addon_modify_default_redirects', $redirects );
 }
 add_action( 'admin_init', 'it_exchange_modify_default_redirects_save_settings' );
 
@@ -254,7 +455,7 @@ add_action( 'admin_init', 'it_exchange_modify_default_redirects_save_settings' )
 function it_exchange_modify_default_redirects_maybe_add_filters() {
 	$settings = it_exchange_get_option( 'addon_modify_default_redirects' );
 	foreach( (array) $settings as $hook => $args ) {
-		add_filter( 'it_exchange_redirect_for-' . $hook, 'it_exchange_modify_default_redirects_apply_filter', 10, 3 ); 
+		add_filter( 'it_exchange_redirect_for-' . $hook, 'it_exchange_modify_default_redirects_apply_filter', 10, 3 );
 	}
 }
 add_action( 'init', 'it_exchange_modify_default_redirects_maybe_add_filters' );
