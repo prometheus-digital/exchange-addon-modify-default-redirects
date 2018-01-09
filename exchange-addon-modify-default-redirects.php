@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: ExchangeWP - Modify Default Redirects
- * Version: 0.0.1
+ * Version: 1.0.5
  * Description: Allows the store owner to change the default locations Exchange redirects customers to after actions like a successful login.
  * Plugin URI: https://exchangewp.com/downloads/modify-default-redirects/
  * Author: ExchangeWP
@@ -68,9 +68,9 @@ function exchange_modify_default_redirects_plugin_updater() {
 		$license = $license_key['exchange_license'];
 
 		$edd_updater = new EDD_SL_Plugin_Updater( 'https://exchangewp.com', __FILE__, array(
-				'version' 		=> '0.0.1', 				// current version number
-				'license' 		=> $license, 		// license key (used get_option above to retrieve from DB)
-				'item_name' 	=> 'modify-default-redirects', 	  // name of this plugin
+				'version' 		=> '1.0.5', 				// current version number
+				'license' 		=> $license, 				// license key (used get_option above to retrieve from DB)
+				'item_id' 		=> 412, 					  // name of this plugin
 				'author' 	  	=> 'ExchangeWP',    // author of this plugin
 				'url'       	=> home_url(),
 				'wp_override' => true,
