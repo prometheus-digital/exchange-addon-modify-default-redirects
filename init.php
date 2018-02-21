@@ -37,7 +37,7 @@ function it_exchange_modify_default_redirects_settings_callback() {
 			ITUtility::show_status_message( __( 'Options Saved', 'LION' ) );
 
 		?>
-		<p><?php printf( __( 'These settings allow you to modify the page that a customer is redirected to after completing a specific action. Need more options? %sLet us know%s', 'LION' ), '<a href="http://ithemes.com/exchange/feature-request/" target="_blank">', '</a>' ); ?></p>
+		<p><?php printf( __( 'These settings allow you to modify the page that a customer is redirected to after completing a specific action.', 'LION' ) ); ?></p>
 		<div class="it-exchange-addon-modify-default-redirects-table">
 			<div class="it-row ps-header">
 				<div class="it-column column-1">
@@ -254,7 +254,7 @@ add_action( 'admin_init', 'it_exchange_modify_default_redirects_save_settings' )
 function it_exchange_modify_default_redirects_maybe_add_filters() {
 	$settings = it_exchange_get_option( 'addon_modify_default_redirects' );
 	foreach( (array) $settings as $hook => $args ) {
-		add_filter( 'it_exchange_redirect_for-' . $hook, 'it_exchange_modify_default_redirects_apply_filter', 10, 3 ); 
+		add_filter( 'it_exchange_redirect_for-' . $hook, 'it_exchange_modify_default_redirects_apply_filter', 10, 3 );
 	}
 }
 add_action( 'init', 'it_exchange_modify_default_redirects_maybe_add_filters' );
