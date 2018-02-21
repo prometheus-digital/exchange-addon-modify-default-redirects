@@ -1,12 +1,13 @@
 <?php
 /*
-* Plugin Name: ExchangeWP - Modify Default Redirects
-* Version: 1.0.6
-* Description: Allows the store owner to change the default locations Exchange redirects customers to after actions like a successful login.
-* Plugin URI: https://exchangewp.com/downloads/modify-default-redirects/
-* Author: ExchangeWP
-* Author URI: https://exchangewp.com
-* ExchangeWP Package: exchange-addon-modify-default-redirects
+ * Plugin Name: ExchangeWP - Modify Default Redirects
+ * Version: 1.0.6
+ * Description: Allows the store owner to change the default locations Exchange redirects customers to after actions like a successful login.
+ * Plugin URI: https://exchangewp.com/downloads/modify-default-redirects/
+ * Author: ExchangeWP
+ * Author URI: https://exchangewp.com
+ * ExchangeWP Package: exchange-addon-modify-default-redirects
+
 
  * Installation:
  * 1. Download and unzip the latest release zip file.
@@ -26,8 +27,8 @@
 function it_exchange_register_modify_default_redirects_addon() {
 	$options = array(
 		'name'              => __( 'Modify Default Redirects', 'LION' ),
-		'description'       => __( 'Allows the store owner to change the default locations ExchangeWP redirects customers to after actions like a successful login.', 'LION' ),
-		'author'            => 'ExchangeWp',
+		'description'       => __( 'Allows the store owner to change the default locations Exchange redirects customers to after actions like a successful login.', 'LION' ),
+		'author'            => 'ExchangeWP',
 		'author_url'        => 'https://exchangewp.com/downloads/modify-default-redirects/',
 		'icon'              => ITUtility::get_url_from_file( dirname( __FILE__ ) . '/lib/assets/modify-default-redirects50px.png' ),
 		'file'              => dirname( __FILE__ ) . '/init.php',

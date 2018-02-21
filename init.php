@@ -38,6 +38,7 @@ function it_exchange_modify_default_redirects_settings_callback() {
 
 		?>
 		<p><?php printf( __( 'These settings allow you to modify the page that a customer is redirected to after completing a specific action.', 'LION' ) ); ?></p>
+
 		<div class="it-exchange-addon-modify-default-redirects-table">
 			<div class="it-row ps-header">
 				<div class="it-column column-1">
@@ -240,7 +241,7 @@ function it_exchange_modify_default_redirects_save_settings() {
 	}
 
 	// Save data
-    it_exchange_save_option( 'addon_modify_default_redirects', $redirects );
+  it_exchange_save_option( 'addon_modify_default_redirects', $redirects );
 }
 add_action( 'admin_init', 'it_exchange_modify_default_redirects_save_settings' );
 
