@@ -12,3 +12,9 @@
 	Compatibility Fix: Updated plugin and theme update data format to match changes in WordPress 4.2.
 1.0.4 - 2015-07-14 - Packaging Bot (lib/updater)
 	Enhancement: Updated link to iThemes support.
+1.0.5 - 2017-08-01 - AJ Morris
+	Rebrand.
+	New License system.
+	New license form field.
+1.0.6 - 2018-02-05 - AJ Morris
+	Update to single license system.
