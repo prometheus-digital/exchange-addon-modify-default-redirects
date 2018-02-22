@@ -37,9 +37,7 @@ function it_exchange_modify_default_redirects_settings_callback() {
 			ITUtility::show_status_message( __( 'Options Saved', 'LION' ) );
 
 		?>
-		<p><?php printf( __( 'These settings allow you to modify the page that a customer is redirected to after completing a specific action.' ) ); ?></p>
-	</div>
-
+		<p><?php printf( __( 'These settings allow you to modify the page that a customer is redirected to after completing a specific action.', 'LION' ) ); ?></p>
 
 		<div class="it-exchange-addon-modify-default-redirects-table">
 			<div class="it-row ps-header">

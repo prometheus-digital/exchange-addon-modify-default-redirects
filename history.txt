@@ -16,3 +16,5 @@
 	Rebrand.
 	New License system.
 	New license form field.
+1.0.6 - 2018-02-05 - AJ Morris
+	Update to single license system.
